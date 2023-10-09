@@ -1,29 +1,25 @@
 import funciones
+import numpy as np
+import random
 
-class tablero:
-    """
-    Clase del tablero de juego.
+class barco:
+    def __init__(self, nombre, eslora):
+        self.nombre = nombre
+        self.eslora = eslora
+        self.posiciones = []
 
-    Atributos:
-        
-    """
-    
-    tipo = "tablero"
-    tamaño_y = 10
-    tamaño_x = 10 
+    def generar_posiciones(self):
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        fila_random = random.randint(0, 9)
+        columna_random = random.randint(0, 9)
+        direction = random.choice(directions)
 
-    def __init__(self, id:int, dict_barcos:dict, ):
-
-        """
-        Atributos particulares a cada tienda
-
-        Args:
-            nombre (str): nombre de la tienda
-            direccion (str): dirección de la tienda
-            n_empleados (int): número de empleados de la tienda
-            ventas_3m (list): lista de las ventas de los últimos 3 meses ordenado de más lejano a más cercano
-        """
-
-        self.id = id
-        self.dict_barcos = dict_barcos
-        funciones.crear_tablero()
+        for _ in range(self.eslora):
+            if 0 <= fila_random < 10 and 0 <= columna_random < 10:
+                self.posiciones.append((fila_random, columna_random))
+                fila_random += direction[0]
+                columna_random += direction[1]
+            else:
+                print("Error")
+                self.posiciones = []
+                self.generar_posiciones()

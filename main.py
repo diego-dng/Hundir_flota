@@ -1,31 +1,39 @@
 import funciones
-# Tablero del rival.
-tablero_rival = funciones.crear_tablero()
-# Tablero del jugador.
-tablero_jugador = funciones.crear_tablero()
+import clases
+import variables
 
-# Colocamos dos barcos del rival.
-#funciones.colocar_barco(funciones.crear_barco_random(4, ), tablero_rival)
-#funciones.colocar_barco(funciones.crear_barco_random(3), tablero_rival)
-
-# PREGUNTAR SI LOS BARCOS DEL JUGADOR SE METEN POR INPUTS O SON RANDOM.
-funciones.crear_barco(3, tablero_rival)
-funciones.crear_barco(2, tablero_rival)
-# Mediante inputs, colocar los barcos del jugador.
-funciones.crear_barco(3, tablero_jugador)
-funciones.crear_barco(2, tablero_jugador)
-
-print(tablero_rival)
-print("\n___________________________________________\n")
-print(tablero_jugador)
-
-# Primer disparo del jugador.
-funciones.disparar(tablero_rival, True)
-funciones.disparar(tablero_jugador)
+# Bucle con el que recorro el diccionario del rival.
+for nombre, eslora in variables.barcos_rival.items():
+    barco = clases.barco(nombre, eslora)
+    barco.generar_posiciones()
+    variables.lista_rival.append(barco)
 
 
-print(tablero_rival)
-print("\n___________________________________________\n")
-print(tablero_jugador)
+for nombre, eslora in variables.barcos_jugador.items():
+    barco = clases.barco(nombre, eslora)
+    barco.generar_posiciones()
+    variables.lista_jugador.append(barco)
 
-# 20 posiciones en total.
+# Imprimir los barcos creados
+print("-------------------------BARCOS RIVAL")
+for barco in variables.lista_rival:
+    print(f"Nombre: {barco.nombre}, Eslora: {barco.eslora}, Posiciones: {barco.posiciones}")
+
+print("-------------------------BARCOS JUGADOR")
+for barco in variables.lista_jugador:
+    print(f"Nombre: {barco.nombre}, Eslora: {barco.eslora}, Posiciones: {barco.posiciones}")
+
+funciones.colocar_barco(variables.tablero_rival, variables.lista_rival)
+funciones.colocar_barco(variables.tablero_jugador, variables.lista_jugador)
+
+funciones.turnos(variables.tablero_jugador, variables.tablero_rival, variables.lista_jugador, variables.lista_rival)
+
+
+
+
+
+
+
+
+
+

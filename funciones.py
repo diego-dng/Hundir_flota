@@ -1,73 +1,121 @@
-import numpy as np
 import random
+import time
+import variables
+# Esta función me la puedo quitar, y crear la variable en el documento de variables.
 
-def crear_tablero(tamaño=(10,10)):
-    return np.full(tamaño, " ")
 
-def colocar_barco(barco, tablero):
-    for casilla in barco:
-        tablero[casilla] = "O"
-    return tablero
+# Función para colocar los barcos en el tablero.
+def colocar_barco(tablero, lista_barcos):
 
-def disparar(tablero, turno_jugador = False):
-    if turno_jugador == True:
-        # Input para pedir la posición a la que quiere disparar.
-        x = input("posición X: ")
-        y = input("posición Y: ")
-        print("Las cordenadas del jugador son:",x,"-",y)
+
+    # Recibe como argumentos el tablero del jugador y la lista de barcos.
+    # Bucle para recorrer la lista de barcos.
+    for barco in lista_barcos:
+        # Bucle para recorrer la lista de las posiciones de cada barco.
+        for i, (fila, columna) in enumerate(barco.posiciones, start=1):
+            # Marco con una 'X' cada posición.
+            tablero[fila, columna] = "O"
+
+
+# Función disparar.
+def disparar(tablero, fila, columna, lista_barcos):
+    time.sleep(1)
+    # Recibe como argumentos: Tablero al que se dispara, la fila, la columna y la lista de barcos.
+    if tablero[fila, columna] == " ":  # Si es una casilla vacía
+        print("¡Agua!")
+        time.sleep(2)
+        tablero[fila, columna] = "#" 
+    elif tablero[fila, columna] == "X":  # Si ya se disparó aquí antes
+        print("Ya has disparado aquí antes.")
     else:
-        x = random.randrange(0, 9)
-        y = random.randrange(0, 9)
-        print("Las cordenadas del rival son:",x,"-",y)
+        # Resultado de la condición si se acierta el disparo.
+        print("¡Impacto!")
+        time.sleep(2)
+        barco_atacado = None
+        # Bucle para recorrer la lista de barcos.
+        for barco in lista_barcos:
+            print(barco.posiciones)
+            if (fila, columna) in barco.posiciones:
+                # Guardar en una variable el barco atacado.
 
-    #casilla = (x,y)
-    x = int(x)
-    y = int(y)
-    if tablero[x,y] == " ":
-        print("Agua")
-        tablero[x,y] = "-"
-        #disparar(tablero, turno_jugador)
+
+                barco_atacado = barco
+                # Fuerza la salida del bucle.
+                break
+        # If para marcar cada barco atacado y comprobar si ha sido hundido.    
+        if barco_atacado:
+            # Sustituye el valor a 'O'.
+            tablero[fila, columna] = "X"
+            # Eliminó esa posición de las posiciones de la clase.
+            barco_atacado.posiciones.remove((fila, columna))
+            # Compruebo si le quedan posiciones a ese barco.
+            if not barco_atacado.posiciones:
+                print(f"Hundiste el barco {barco_atacado.nombre}.")
+                time.sleep(2)
+           
+        return True
+
+
+# Funcion para el turno del jugador.
+def turno_jugador(tablero, lista_barcos, tablero_vista):
+    print("\n___________________________________________\n")
+    print(tablero_vista)
+    print("\n___________________________________________\n")
+    print("Turno del jugador:")
+    # Muestro la lista de posiciones a las que se ha disparado.
+    print("Posiciones a las que se ha disparado: ", variables.lista_disparos_jugador)
+    fila = int(input("Ingresa la fila (0-9): "))
+    columna = int(input("Ingresa la columna (0-9): "))
+   
+    if 0 <= fila < 10 and 0 <= columna < 10:
+        variables.lista_disparos_jugador.append((fila, columna))
+        resultado = disparar(tablero, fila, columna, lista_barcos)
+        if resultado == False:
+            print("¡Agua!")
+        elif resultado == True:
+            turno_jugador(tablero, lista_barcos, tablero_vista)  # Repetir turno del jugador
     else:
-        print("Tocado")
-        tablero[x,y] = "X"
-        #disparar(tablero, turno_jugador)
-    return tablero
+        print("Coordenadas fuera del rango.")
+   
 
-def crear_barco(eslora, tablero):
-    filas = random.randrange(0, 9)
-    columnas = random.randrange(0, 9)
-    
-    orientacion = random.choice(["N", "S", "E", "O"])
-    print(filas, "|", columnas, "|", orientacion, "|", eslora)
 
-    if tablero[filas, columnas] == " ":
-        tablero[filas, columnas] = "O"
-        if orientacion == "N":
-            while eslora > 0: 
-                tablero[filas - 1, columnas] = "O"
-                filas = filas - 1
-                eslora = eslora-1
+# Función para que el rival realice un turno.
+def turno_rival(tablero, lista_barcos):
+    print("\n___________________________________________\n")
+    print("Turno del rival:")
+    fila = random.randrange(0, 9)
+    columna = random.randrange(0, 9)
+    print(f"El rival dispara en fila {fila} y columna {columna}.")
+    variables.lista_disparos_rival.append((fila, columna))
+    resultado = disparar(tablero, fila, columna, lista_barcos)
+    if resultado == False:
+        print("¡Agua!")
+    elif resultado == True:
+        turno_rival(tablero, lista_barcos)
+   
 
-        elif orientacion == "S":
-            while eslora > 0: 
-                tablero[filas + 1, columnas] = "O"
-                filas = filas + 1
-                eslora = eslora-1
-        
-        elif orientacion == "E":
-            while eslora > 0:
-                tablero[filas, columnas + 1] = "O"
-                columnas = columnas + 1
-                eslora = eslora-1
 
-        elif orientacion == "O":
-            while eslora > 0:
-                tablero[filas, columnas - 1] = "O"
-                columnas = columnas - 1
-                eslora = eslora-1
-        
+# Sistema de turnos
+def turnos(tablero_jugador, tablero_rival, lista_jugador, lista_rival):
+    jugador_actual = 1  # Inicia el juego con el jugador 1
 
-    else:
-        # Revisar tema de argumento eslora.
-        crear_barco(3, tablero)
-    
+
+    while True:
+        if jugador_actual == 1:
+            turno_jugador(tablero_rival, lista_rival, tablero_jugador)
+            time.sleep(1)
+            if not any(barco.posiciones for barco in lista_rival):
+                print("¡El Jugador 1 ha ganado! Todos los barcos del rival han sido hundidos.")
+                break
+        else:
+            turno_rival(tablero_jugador, lista_jugador)
+            time.sleep(1)
+            if not any(barco.posiciones for barco in lista_jugador):
+                print("¡El ordenador ha ganado! Todos tus barcos han sido hundidos.")
+                break
+   
+        # Cambiar de jugador solo si no hubo un hundimiento
+        if jugador_actual == 1:
+            jugador_actual = 2
+        else:
+            jugador_actual = 1
