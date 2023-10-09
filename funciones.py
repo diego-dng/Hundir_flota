@@ -43,7 +43,10 @@ def disparar(tablero, fila, columna, lista_barcos):
             # Compruebo si le quedan posiciones a ese barco.
             if not barco_atacado.posiciones:
                 print(f"Hundiste el barco {barco_atacado.nombre}.")
-                time.sleep(2)   
+                time.sleep(2) 
+        if not any(barco.posiciones for barco in lista_barcos):
+                print("¡¡HAS GANADO!!.")
+                return False
         return True
 
 
@@ -61,9 +64,8 @@ def turno_jugador(tablero, lista_barcos, tablero_vista):
     if 0 <= fila < 10 and 0 <= columna < 10:
         variables.lista_disparos_jugador.append((fila, columna))
         resultado = disparar(tablero, fila, columna, lista_barcos)
-        if resultado == False:
-            print("¡Agua!")
-        elif resultado == True:
+        
+        if resultado == True:
             turno_jugador(tablero, lista_barcos, tablero_vista)  # Repetir turno del jugador
     else:
         print("Coordenadas fuera del rango.")
@@ -96,7 +98,7 @@ def turnos(tablero_jugador, tablero_rival, lista_jugador, lista_rival):
             turno_jugador(tablero_rival, lista_rival, tablero_jugador)
             time.sleep(1)
             if not any(barco.posiciones for barco in lista_rival):
-                print("¡¡HAS GANADO!!.")
+                print("¡¡HAS DERROTADO A TU RIVAL!!.")
                 break
             
         else:
