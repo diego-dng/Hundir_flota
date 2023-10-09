@@ -1,13 +1,9 @@
 import random
 import time
 import variables
-# Esta función me la puedo quitar, y crear la variable en el documento de variables.
-
 
 # Función para colocar los barcos en el tablero.
 def colocar_barco(tablero, lista_barcos):
-
-
     # Recibe como argumentos el tablero del jugador y la lista de barcos.
     # Bucle para recorrer la lista de barcos.
     for barco in lista_barcos:
@@ -16,28 +12,25 @@ def colocar_barco(tablero, lista_barcos):
             # Marco con una 'X' cada posición.
             tablero[fila, columna] = "O"
 
-
 # Función disparar.
 def disparar(tablero, fila, columna, lista_barcos):
     time.sleep(1)
     # Recibe como argumentos: Tablero al que se dispara, la fila, la columna y la lista de barcos.
     if tablero[fila, columna] == " ":  # Si es una casilla vacía
         print("¡Agua!")
-        time.sleep(2)
-        tablero[fila, columna] = "#" 
-    elif tablero[fila, columna] == "X":  # Si ya se disparó aquí antes
+        tablero[fila, columna] = "#"
+        time.sleep(2) 
+    elif tablero[fila, columna] == "X": 
         print("Ya has disparado aquí antes.")
     else:
         # Resultado de la condición si se acierta el disparo.
         print("¡Impacto!")
         time.sleep(2)
         barco_atacado = None
+        
         # Bucle para recorrer la lista de barcos.
         for barco in lista_barcos:
             if (fila, columna) in barco.posiciones:
-                # Guardar en una variable el barco atacado.
-
-
                 barco_atacado = barco
                 # Fuerza la salida del bucle.
                 break
@@ -46,12 +39,11 @@ def disparar(tablero, fila, columna, lista_barcos):
             # Sustituye el valor a 'O'.
             tablero[fila, columna] = "X"
             # Eliminó esa posición de las posiciones de la clase.
-            barco_atacado.posiciones.remove((fila, columna))
+            barco_atacado.posiciones.remove((fila, columna)) 
             # Compruebo si le quedan posiciones a ese barco.
             if not barco_atacado.posiciones:
                 print(f"Hundiste el barco {barco_atacado.nombre}.")
-                time.sleep(2)
-           
+                time.sleep(2)   
         return True
 
 
@@ -104,14 +96,16 @@ def turnos(tablero_jugador, tablero_rival, lista_jugador, lista_rival):
             turno_jugador(tablero_rival, lista_rival, tablero_jugador)
             time.sleep(1)
             if not any(barco.posiciones for barco in lista_rival):
-                print("¡El Jugador 1 ha ganado! Todos los barcos del rival han sido hundidos.")
+                print("¡¡HAS GANADO!!.")
                 break
+            
         else:
             turno_rival(tablero_jugador, lista_jugador)
             time.sleep(1)
             if not any(barco.posiciones for barco in lista_jugador):
-                print("¡El ordenador ha ganado! Todos tus barcos han sido hundidos.")
+                print("¡¡HAS PERDIDO!!.")
                 break
+           
    
         # Cambiar de jugador solo si no hubo un hundimiento
         if jugador_actual == 1:
