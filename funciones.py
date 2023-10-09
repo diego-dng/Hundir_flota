@@ -34,7 +34,6 @@ def disparar(tablero, fila, columna, lista_barcos):
         barco_atacado = None
         # Bucle para recorrer la lista de barcos.
         for barco in lista_barcos:
-            print(barco.posiciones)
             if (fila, columna) in barco.posiciones:
                 # Guardar en una variable el barco atacado.
 
@@ -85,7 +84,7 @@ def turno_rival(tablero, lista_barcos):
     print("Turno del rival:")
     fila = random.randrange(0, 9)
     columna = random.randrange(0, 9)
-    print(f"El rival dispara en fila {fila} y columna {columna}.")
+    print("El rival ha disparado a la posición:", fila, ",",  columna)
     variables.lista_disparos_rival.append((fila, columna))
     resultado = disparar(tablero, fila, columna, lista_barcos)
     if resultado == False:

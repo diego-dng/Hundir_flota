@@ -15,9 +15,9 @@ for nombre, eslora in variables.barcos_jugador.items():
     variables.lista_jugador.append(barco)
 
 # Imprimir los barcos creados
-print("-------------------------BARCOS RIVAL")
+"""print("-------------------------BARCOS RIVAL")
 for barco in variables.lista_rival:
-    print(f"Nombre: {barco.nombre}, Eslora: {barco.eslora}, Posiciones: {barco.posiciones}")
+    print(f"Nombre: {barco.nombre}, Eslora: {barco.eslora}, Posiciones: {barco.posiciones}")"""
 
 print("-------------------------BARCOS JUGADOR")
 for barco in variables.lista_jugador:
